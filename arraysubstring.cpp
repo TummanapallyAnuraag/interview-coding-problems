@@ -54,6 +54,46 @@ int count_substrings(string s, int k){
     return substr_count;
 }
 
+int count_substrings_order_n(string s, int k){
+    int n = s.size(), one_count = 0, substr_count = 0;
+    /* 
+    sp - start pointer; 
+    op - one pointer; 
+    ep - end pointer 
+    */
+    int sp = 0, ep = -1, op = -1, op_prev = -1;
+    
+    while(sp < n && ep < n){
+        ep++;
+        if(ep < n){
+            if(s[ep] == '1'){
+                op_prev = op;
+                op = ep;        // update one_pointer
+                one_count++;    // increment one_count
+            }
+            if(one_count > 1){
+                DEBUG && cout << "DBG: " << s.substr(sp, ep - sp) << endl;
+                DEBUG && cout << "DBG: sp: " << sp << ", op_prev: " << op_prev << ", ep: " << ep  << endl;
+                // think about it...
+                substr_count += (op_prev - sp + 1)*(ep - op_prev);
+                sp = op_prev + 1;
+                --one_count;
+                DEBUG && cout << "DBG: " << substr_count << endl;
+                
+            }else if( ep == n-1){
+                /* end is now at the last element */
+                DEBUG && cout << "DBG: " << s.substr(sp, ep - sp + 1) << endl;
+                DEBUG && cout << "DBG: sp: " << sp << ", op: " << op << ", ep: " << ep  << endl;
+                // think about it again...
+                substr_count += (op - sp + 1)*(ep - op + 1);
+                DEBUG && cout << "DBG: " << substr_count << endl;
+            }
+        }
+    }
+    
+    return substr_count;
+}
+
 int main(){
 
     int n, k;
@@ -62,6 +102,7 @@ int main(){
     cin >> s;
 
     cout << count_substrings(s, k) << endl;
+    cout << count_substrings_order_n(s, k) << endl;
 
     return 0;
 }
